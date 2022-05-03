@@ -6,6 +6,7 @@ import ideaImageUrl from "../../assets/idea.svg";
 import thoughtImageUrl from "../../assets/thought.svg";
 import { useState } from "react";
 import FeedbackContentStep from "./Steps/FeedbackContentStep";
+import FeedbackSucessStep from "./Steps/FeedbackSucessStep";
 
 export const feedbackTypes = {
 	BUG: {
@@ -34,20 +35,33 @@ export default function WidgetForm() {
 	const [selectedFeedback, setSelectedFeedback] = useState<FeedbackType | null>(
 		null
 	);
+	const [feedbackSent, setFeedbackSent] = useState<boolean>(false);
 
 	function handleRestartFeedback() {
+		setFeedbackSent(false);
 		setSelectedFeedback(null);
 	}
 
 	return (
 		<div className="relative flex flex-col items-center p-4 mb-4 shadow-lg bg-zinc-900 rounded-2xl w-[calc(100vw-2rem)] md:w-auto">
-			{!selectedFeedback ? (
-				<FeedbackTypeStep onFeedbackTypeChanged={setSelectedFeedback} />
-			) : (
-				<FeedbackContentStep
-					feedbackType={selectedFeedback}
+			{feedbackSent ? (
+				<FeedbackSucessStep
 					onFeedbackRestartRequested={handleRestartFeedback}
 				/>
+			) : (
+				<>
+					{!selectedFeedback ? (
+						<FeedbackTypeStep onFeedbackTypeChanged={setSelectedFeedback} />
+					) : (
+						<FeedbackContentStep
+							feedbackType={selectedFeedback}
+							onFeedbackRestartRequested={handleRestartFeedback}
+							onFeedbackSent={() => {
+								setFeedbackSent(true);
+							}}
+						/>
+					)}
+				</>
 			)}
 
 			<footer className="text-xs text-neutral-400">
